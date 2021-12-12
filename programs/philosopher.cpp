@@ -18,11 +18,11 @@ void Philosopher::eat(std::vector<Chopsticks>& chop, const bool leftFirst) const
 		::takeLeft(getSignature(), chop.at(right_chop));
 	}
 
-	std::this_thread::sleep_for(std::chrono::seconds(rand() % 4 + 1));
+	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
 	std::string line(getSignature());
 	line += "eating\n";
 	std::cout << line;
-	std::this_thread::sleep_for(std::chrono::seconds(rand() % 4 + 1));
+	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
 
 	if(leftFirst) {
 		::putLeft(getSignature(), chop.at(left_chop));
@@ -38,7 +38,7 @@ void Philosopher::think() const {
 	std::string line(getSignature());
 	line += "thinking\n";
 	std::cout << line;
-	sleep(rand() % 5 + 5);
+	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 5 + 5 });
 }
 
 std::string Philosopher::getSignature() const {
