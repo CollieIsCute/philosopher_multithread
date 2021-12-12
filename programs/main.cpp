@@ -13,6 +13,7 @@ void phi_routine_1(const int phiID, std::vector<Philosopher>& phi, std::vector<C
 void method_2(const int N, std::vector<Philosopher>& phi, std::vector<Chopsticks>& chop);
 void phi_routine_2(const int phiID, std::vector<Philosopher>& phi, std::vector<Chopsticks>& chop);
 void method_3(const int N, std::vector<Philosopher>& phi, std::vector<Chopsticks>& chop);
+void phi_routine_3(const int phiID, std::vector<Philosopher>& phi, std::vector<Chopsticks>& chop);
 
 int main(int argc, char* argv[]) {
 	srand(0);
@@ -71,5 +72,13 @@ void phi_routine_2(const int phiID, std::vector<Philosopher>& phi, std::vector<C
 }
 
 void method_3(const int N, std::vector<Philosopher>& phi, std::vector<Chopsticks>& chop) {
+	std::thread t_arr[N];
+	for(int phi_ID = 0; phi_ID < N; phi_ID++)
+		t_arr[phi_ID] = std::thread(phi_routine_3, phi_ID, std::ref(phi), std::ref(chop));
+	for(int phi_ID = 0; phi_ID < N; phi_ID++)
+		t_arr[phi_ID].join();
+}
+
+void phi_routine_3(const int phiID, std::vector<Philosopher>& phi, std::vector<Chopsticks>& chop) {
 	// TODO
 }
