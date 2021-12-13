@@ -7,6 +7,10 @@
 class DeadlockPhilosopher : public Philosopher {
 	bool hasChop;
 	static int numberOwnChop;
+	void takeChop(const std::string& phi_info, std::vector<Chopsticks>& chop, const int ID,
+				  const bool leftFirst);
+	void putChop(const std::string& phi_info, std::vector<Chopsticks>& chop, const int ID,
+				 const bool leftFirst);
 
 public:
 	DeadlockPhilosopher() = delete;

@@ -1,24 +1,14 @@
 #include "deadlockphilosopher.hpp"
 
 namespace {
-void deadlockTakeChop();
 void takeLeft(const std::string& phi_info, Chopsticks& chop);
 void takeRight(const std::string& phi_info, Chopsticks& chop);
-void deadlockPutChop();
 void putLeft(const std::string& phi_info, Chopsticks& chop);
 void putRight(const std::string& phi_info, Chopsticks& chop);
 }  // namespace
 
 void DeadlockPhilosopher::eat(std::vector<Chopsticks>& chop, const bool leftFirst) {
-	const int left_chop = ID, right_chop = ((unsigned long)ID < chop.size() - 1) ? ID + 1 : 0;
-	if(leftFirst) {
-		::takeLeft(getSignature(), chop.at(left_chop));
-		::takeRight(getSignature(), chop.at(right_chop));
-	}
-	else {
-		::takeRight(getSignature(), chop.at(right_chop));
-		::takeLeft(getSignature(), chop.at(left_chop));
-	}
+	takeChop(getSignature(), chop, ID, leftFirst);
 
 	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
 	std::string line(getSignature());
@@ -26,13 +16,34 @@ void DeadlockPhilosopher::eat(std::vector<Chopsticks>& chop, const bool leftFirs
 	std::cout << line;
 	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
 
+	putChop(getSignature(), chop, ID, leftFirst);
+}
+
+void DeadlockPhilosopher::takeChop(const std::string& phi_info, std::vector<Chopsticks>& chop,
+								   const int ID, const bool leftFirst) {
+	const int left_chop = ID, right_chop = ((unsigned long)ID < chop.size() - 1) ? ID + 1 : 0;
+
 	if(leftFirst) {
-		::putLeft(getSignature(), chop.at(left_chop));
-		::putRight(getSignature(), chop.at(right_chop));
+		::takeLeft(phi_info, chop.at(left_chop));
+		::takeRight(phi_info, chop.at(right_chop));
 	}
 	else {
-		::putRight(getSignature(), chop.at(right_chop));
-		::putLeft(getSignature(), chop.at(left_chop));
+		::takeRight(phi_info, chop.at(right_chop));
+		::takeLeft(phi_info, chop.at(left_chop));
+	}
+}
+
+void DeadlockPhilosopher::putChop(const std::string& phi_info, std::vector<Chopsticks>& chop,
+								  const int ID, const bool leftFirst) {
+	const int left_chop = ID, right_chop = ((unsigned long)ID < chop.size() - 1) ? ID + 1 : 0;
+
+	if(leftFirst) {
+		::putLeft(phi_info, chop.at(left_chop));
+		::putRight(phi_info, chop.at(right_chop));
+	}
+	else {
+		::putRight(phi_info, chop.at(right_chop));
+		::putLeft(phi_info, chop.at(left_chop));
 	}
 }
 

@@ -12,7 +12,7 @@ void putRight(const std::string& phi_info, Chopsticks& chop);
 }  // namespace
 
 void Philosopher::eat(std::vector<Chopsticks>& chop, const bool leftFirst) const {
-::takeChop(getSignature(), chop, ID, leftFirst);
+	::takeChop(getSignature(), chop, ID, leftFirst);
 
 	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
 	std::string line(getSignature());
