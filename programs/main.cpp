@@ -18,7 +18,7 @@ void method_3(const int N);
 void phi_routine_3(const int phiID, std::vector<Philosopher>& phi, std::vector<Chopsticks>& chop);
 
 int main(int argc, char* argv[]) {
-	srand(time(0));
+	srand(0);
 	const int M = std::stoi(argv[1]), N = std::stoi(argv[2]);
 
 	switch(M) {
