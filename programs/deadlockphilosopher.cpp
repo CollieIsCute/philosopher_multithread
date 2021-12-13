@@ -7,6 +7,8 @@ void putLeft(const std::string& phi_info, Chopsticks& chop);
 void putRight(const std::string& phi_info, Chopsticks& chop);
 }  // namespace
 
+int DeadlockPhilosopher::numberOwnChop = 0;
+
 void DeadlockPhilosopher::eat(std::vector<Chopsticks>& chop, const bool leftFirst) {
 	takeChop(getSignature(), chop, ID, leftFirst);
 
@@ -25,10 +27,26 @@ void DeadlockPhilosopher::takeChop(const std::string& phi_info, std::vector<Chop
 
 	if(leftFirst) {
 		::takeLeft(phi_info, chop.at(left_chop));
+		if(hasChop == false)
+			numberOwnChop++;
+		hasChop = true;
+		// deadlock detection
+		if(chop.size() == (unsigned long)numberOwnChop) {
+			std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
+			throw std::runtime_error("Deadlock happened!\n");
+		}
 		::takeRight(phi_info, chop.at(right_chop));
 	}
 	else {
 		::takeRight(phi_info, chop.at(right_chop));
+		if(hasChop == false)
+			numberOwnChop++;
+		hasChop = true;
+		// deadlock detection
+		if(chop.size() == (unsigned long)numberOwnChop) {
+			std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
+			throw std::runtime_error("Deadlock happened!\n");
+		}
 		::takeLeft(phi_info, chop.at(left_chop));
 	}
 }
@@ -45,6 +63,9 @@ void DeadlockPhilosopher::putChop(const std::string& phi_info, std::vector<Chops
 		::putRight(phi_info, chop.at(right_chop));
 		::putLeft(phi_info, chop.at(left_chop));
 	}
+	if(hasChop)
+		numberOwnChop--;
+	hasChop = false;
 }
 
 namespace {

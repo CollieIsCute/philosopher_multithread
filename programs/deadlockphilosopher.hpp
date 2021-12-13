@@ -2,6 +2,7 @@
 #define __DEADLOCKPHILOSOPHER_HPP__
 
 #include "philosopher.hpp"
+#include <stdexcept>
 
 /* Because method 1 might encounter deadlock problems, so I add deadlock detection to it. */
 class DeadlockPhilosopher : public Philosopher {
