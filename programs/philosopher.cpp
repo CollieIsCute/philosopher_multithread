@@ -1,22 +1,18 @@
 #include "philosopher.hpp"
 
 namespace {
+void takeChop(const std::string& phi_info, std::vector<Chopsticks>& chop, const int ID,
+			  const bool leftFirst);
 void takeLeft(const std::string& phi_info, Chopsticks& chop);
 void takeRight(const std::string& phi_info, Chopsticks& chop);
+void putChop(const std::string& phi_info, std::vector<Chopsticks>& chop, const int ID,
+			 const bool leftFirst);
 void putLeft(const std::string& phi_info, Chopsticks& chop);
 void putRight(const std::string& phi_info, Chopsticks& chop);
 }  // namespace
 
 void Philosopher::eat(std::vector<Chopsticks>& chop, const bool leftFirst) const {
-	const int left_chop = ID, right_chop = ((unsigned long)ID < chop.size() - 1) ? ID + 1 : 0;
-	if(leftFirst) {
-		::takeLeft(getSignature(), chop.at(left_chop));
-		::takeRight(getSignature(), chop.at(right_chop));
-	}
-	else {
-		::takeRight(getSignature(), chop.at(left_chop));
-		::takeLeft(getSignature(), chop.at(right_chop));
-	}
+::takeChop(getSignature(), chop, ID, leftFirst);
 
 	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
 	std::string line(getSignature());
@@ -24,14 +20,40 @@ void Philosopher::eat(std::vector<Chopsticks>& chop, const bool leftFirst) const
 	std::cout << line;
 	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
 
-	if(leftFirst) {
-		::putLeft(getSignature(), chop.at(left_chop));
-		::putRight(getSignature(), chop.at(right_chop));
-	}
-	else {
-		::putRight(getSignature(), chop.at(right_chop));
-		::putLeft(getSignature(), chop.at(left_chop));
-	}
+	::putChop(getSignature(), chop, ID, leftFirst);
+}
+
+void Philosopher::immediately_eat(std::vector<Chopsticks>& chop) {
+	const int left_chop = ID, right_chop = ((unsigned long)ID < chop.size() - 1) ? ID + 1 : 0;
+	int L_err, R_err;
+	do {  // get both chopsticks at the same time
+		L_err = chop.at(left_chop).trylock();
+		if(L_err == EBUSY)
+			continue;
+		else {
+			R_err = chop.at(right_chop).trylock();
+			if(R_err == EBUSY) {
+				chop.at(left_chop).unlock();
+				continue;
+			}
+		}
+	} while(L_err == EBUSY || R_err == EBUSY);
+
+	std::string line(getSignature());
+	line += "taking both left and right chopsticks\n";
+	std::cout << line;
+
+	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
+	line = std::string(getSignature());
+	line += "eating\n";
+	std::cout << line;
+	std::this_thread::sleep_for(std::chrono::seconds{ rand() % 4 + 1 });
+
+	chop.at(left_chop).unlock();
+	chop.at(right_chop).unlock();
+	line = std::string(getSignature());
+	line += "putting both left and right chopsticks\n";
+	std::cout << line;
 }
 
 void Philosopher::think() const {
@@ -49,6 +71,20 @@ std::string Philosopher::getSignature() const {
 }
 
 namespace {
+void takeChop(const std::string& phi_info, std::vector<Chopsticks>& chop, const int ID,
+			  const bool leftFirst) {
+	const int left_chop = ID, right_chop = ((unsigned long)ID < chop.size() - 1) ? ID + 1 : 0;
+
+	if(leftFirst) {
+		::takeLeft(phi_info, chop.at(left_chop));
+		::takeRight(phi_info, chop.at(right_chop));
+	}
+	else {
+		::takeRight(phi_info, chop.at(right_chop));
+		::takeLeft(phi_info, chop.at(left_chop));
+	}
+}
+
 void takeLeft(const std::string& phi_info, Chopsticks& chop) {
 	chop.lock();
 	std::string line(phi_info);
@@ -61,6 +97,19 @@ void takeRight(const std::string& phi_info, Chopsticks& chop) {
 	std::string line(phi_info);
 	line += "taking right chopstick\n";
 	std::cout << line;
+}
+
+void putChop(const std::string& phi_info, std::vector<Chopsticks>& chop, const int ID,
+			 const bool leftFirst) {
+	const int left_chop = ID, right_chop = ((unsigned long)ID < chop.size() - 1) ? ID + 1 : 0;
+	if(leftFirst) {
+		::putLeft(phi_info, chop.at(left_chop));
+		::putRight(phi_info, chop.at(right_chop));
+	}
+	else {
+		::putRight(phi_info, chop.at(right_chop));
+		::putLeft(phi_info, chop.at(left_chop));
+	}
 }
 
 void putLeft(const std::string& phi_info, Chopsticks& chop) {

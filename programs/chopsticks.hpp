@@ -1,6 +1,8 @@
 #ifndef __CHOPSTICKS_HPP__
 #define __CHOPSTICKS_HPP__
 
+#include <cassert>
+#include <cerrno>
 #include <pthread.h>
 
 class Chopsticks {
@@ -10,6 +12,7 @@ public:
 	Chopsticks();
 	~Chopsticks();
 	void lock();
+	int trylock();
 	void unlock();
 };
 
