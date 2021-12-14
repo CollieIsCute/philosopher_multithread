@@ -1,5 +1,5 @@
 all:
-	g++ -Wall -lpthread programs/*.cpp -o main.elf
+	g++ -Wall -lpthread -latomic programs/*.cpp -o main.elf
 format:
 	clang-format -style=file -i programs/*
 clean:
