@@ -7,7 +7,7 @@ void putLeft(const std::string& phi_info, Chopsticks& chop);
 void putRight(const std::string& phi_info, Chopsticks& chop);
 }  // namespace
 
-int DeadlockPhilosopher::numberOwnChop = 0;
+std::atomic_int DeadlockPhilosopher::numberOwnChop = 0;
 
 void DeadlockPhilosopher::eat(std::vector<Chopsticks>& chop, const bool leftFirst) {
 	takeChop(getSignature(), chop, ID, leftFirst);
