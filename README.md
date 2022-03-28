@@ -17,7 +17,11 @@
 
 - 使用到 thread 相關 lib
 
-## 執行結果(分別測試三種不同演算法)
-![1](pics/1.jpg)
-![2](pics/2.jpg)
-![3](pics/3.jpg)
+## 執行結果(分別測試三種不同演算法)  
+
+1. 第一種演算法  
+    - <img src="pics/1.jpg" alt="Cover" width="30%"/>  
+3. 第二種演算法  
+    - <img src="pics/2.jpg" alt="Cover" width="30%"/>  
+5. 第三種演算法
+    - <img src="pics/3.jpg" alt="Cover" width="30%"/>  
