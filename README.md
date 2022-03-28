@@ -15,4 +15,9 @@
 
 ## 特殊 library
 
-- 無。此作業只有用到 c++ 的一般 library, 並無額外使用其他 library.
+- 使用到 thread 相關 lib
+
+## 執行結果(分別測試三種不同演算法)
+![1](pics/1.jpg)
+![2](pics/2.jpg)
+![3](pics/3.jpg)
